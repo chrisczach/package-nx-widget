@@ -63,8 +63,11 @@ const packageFiles = async (files) => await Object.entries(files).reduce(async (
   const isConfig = key === 'config'
   const packaged = await _packaged
   const fileRaw = await loadFile(path)
-  const readValue = isConfig ? JSON.parse(fileRaw) : fileRaw;
-  return isConfig ? { ...readValue, ...packaged } : { ...packaged, [key]: readValue }
+  const readValue = isConfig ? Object.entries(JSON.parse(fileRaw)).reduce((combined, [key, value]) => value ? { ...combined, [key]: value } : combined, {}) : fileRaw;
+  if (isConfig) {
+    console.log(readValue)
+  }
+  return isConfig ? { ...packaged, ...readValue } : { ...packaged, [key]: readValue }
 }, baseConfig as any)
 
 export async function packageNxWidget(cliArguments: CliArguments): Promise<{ message: string }> {
