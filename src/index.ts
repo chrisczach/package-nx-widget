@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs'
+import { readFile, writeFile, rmdir, mkdir } from 'fs'
 
 export enum ArgsEnum {
   b = 'base',
@@ -55,6 +55,10 @@ const saveConfig = (path, data) => new Promise<string>((resolve) => {
   })
 })
 
+const createTarget = (path) => new Promise<void>((resolve, reject) => mkdir(path, { recursive: true }, (err) => err ? reject(err) : resolve()))
+
+const clearTarget = (path) => new Promise<void>((resolve, reject) => rmdir(path, { recursive: true }, (err) => err ? reject(err) : resolve(path))).then(createTarget)
+
 const packageFiles = async (files) => await Object.entries(files).reduce(async (_packaged, [key, path]) => {
   const isConfig = key === 'config'
   const packaged = await _packaged
@@ -75,6 +79,7 @@ export async function packageNxWidget(cliArguments: CliArguments): Promise<{ mes
   const packagedConfig = await packageFiles(files)
   const widgetFileName = `${packagedConfig.name.split(' ').map(segment => segment.toLowerCase()).join('-')}.wgt`
   const widgetTargetPath = `${basePath}/${widgetFileName}`
+  await clearTarget(basePath)
   const message = await saveConfig(widgetTargetPath, packagedConfig)
 
   return { message }
