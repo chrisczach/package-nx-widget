@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import program from 'commander'
+import { Command } from 'commander'
 
 import { packageNxWidget, ArgsEnum, argDefaults, CliArguments, argDescriptions } from './index'
 
-Object.entries(ArgsEnum).reduce((programRef, [short, long]) => programRef.option(`-${short} --${long} <value>`, argDescriptions[long],argDefaults[long]), program.version('0.1.0')).parse(process.argv)
+const program = new Command();
 
-const pickedArgs: CliArguments = Object.values(ArgsEnum).reduce((args, long) => ({ ...args, [long]: program[long] }), {} as any)
+Object.entries(ArgsEnum).reduce((programRef, [short, long]) => programRef.option(`-${short} --${long} <value>`, argDescriptions[long], argDefaults[long]), program.version('0.1.0')).parse(process.argv)
 
-packageNxWidget(pickedArgs).then(result => console.log(result.message))
+packageNxWidget(program.opts() as CliArguments).then(result => console.log(result.message))
