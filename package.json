@@ -1,6 +1,6 @@
 {
   "name": "package-nx-widget",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "./dist/index.js",
   "bin": "./dist/cli.js",
   "files": [
