@@ -12,7 +12,8 @@
     "clean": "rimraf ./dist/ ./exec/",
     "build": "npm run clean && tsc",
     "test": "npm run build && ava --verbose",
-    "bundle": "npm run build && pkg . --out-dir ./exec/"
+    "bundle": "npm run build && pkg . --out-dir ./exec/",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^17.0.13",
